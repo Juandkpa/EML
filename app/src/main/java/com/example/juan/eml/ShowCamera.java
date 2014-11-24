@@ -25,7 +25,10 @@ public class ShowCamera extends SurfaceView implements SurfaceHolder.Callback{
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        camera = camera.open();
+
+        if(camera == null) {
+            camera = camera.open();
+        }
         try {
 
             camera.setPreviewDisplay(holder);

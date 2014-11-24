@@ -153,6 +153,7 @@ public class SearchableActivity extends ListActivity implements LocationListener
                 sb.append(line);
             }
             data = sb.toString();
+            Log.v("EL JSON: ",data);
             br.close();
 
         }catch(Exception e){
