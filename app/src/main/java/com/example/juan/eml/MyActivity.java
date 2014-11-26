@@ -20,6 +20,7 @@ import android.hardware.Camera.PictureCallback;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SearchView;
 
@@ -49,7 +50,7 @@ public class MyActivity extends Activity  {
     private ShowCamera cameraView; //cameraSurfaceView
     private ImageView imageResult;
     private FrameLayout frameNew;
-    private Button snapPhoto;
+    private ImageButton snapPhoto;
     private boolean mCameraReadyFlag = true;
     private Context mContext = this;
     private SearchView searchView;
@@ -88,7 +89,7 @@ public class MyActivity extends Activity  {
         imageResult.setBackgroundColor(Color.GRAY);
 
         frameNew = (FrameLayout) findViewById(R.id.camera_preview);
-        snapPhoto = (Button) findViewById(R.id.button_capture);
+        snapPhoto = (ImageButton) findViewById(R.id.button_capture);
 
         frameNew.addView(imageResult);
         frameNew.addView(cameraView);
@@ -103,7 +104,7 @@ public class MyActivity extends Activity  {
             mCameraReadyFlag = true;
             frameNew.bringChildToFront(cameraView);
             imageResult.setImageBitmap(null);
-            snapPhoto.setText("capture");
+          //  snapPhoto.setText("capture");
         }
     }
 
@@ -126,7 +127,7 @@ public class MyActivity extends Activity  {
             //Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
             //
             frameNew.bringChildToFront(imageResult);
-            snapPhoto.setText("Take it");
+     //       snapPhoto.setText("Take it");
             mCameraReadyFlag = false;
         }
     };
