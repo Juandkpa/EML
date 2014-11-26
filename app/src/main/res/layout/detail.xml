@@ -27,18 +27,19 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:orientation="vertical">
-            <Button
+            <ImageButton
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginLeft="165dp"/>
+                android:id="@+id/toMap"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/ic_action_search"/>
             <TextView
                 android:id="@+id/horario"
                 android:layout_width="220dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="5dp"/>
-            </LinearLayout>
+        </LinearLayout>
         </LinearLayout>
         <TextView
             android:id="@+id/grlComment"

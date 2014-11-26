@@ -4,4 +4,17 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/author_name"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:textStyle="bold"
+        android:textSize="14dp"
+        android:gravity="center"/>
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="fill_parent"
+        android:layout_height="80dp"
+        android:maxLines="5"
+        android:scrollbars="vertical"/>
 </LinearLayout>

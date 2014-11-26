@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -47,36 +48,17 @@ public class SearchableActivity extends ListActivity implements LocationListener
     private static final String NAME = "name";
     private static final String VECINITY = "vicinity";
     private static final String RATING = "rating";
-
+    private static final String REFERENCE = "reference";
+    private ListView lv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_searchable);
 
-        ListView lv = getListView();
+        lv = getListView();
 
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                // getting values from selected ListItem
-                String name = ((TextView) view.findViewById(R.id.name))
-                        .getText().toString();
-                String vecinity = ((TextView) view.findViewById(R.id.vecinity))
-                        .getText().toString();
-//                String reference =
-               //Crear lista de lugares genera?
-                // Starting single contact activity
-                Intent in = new Intent(getApplicationContext(),
-                        SearchDetails.class);
-                in.putExtra(NAME, name);
-               // in.putExtra("TAG_REFERENCE", reference);
-                in.putExtra(VECINITY,vecinity);
-                startActivity(in);
-            }
-        });
 
 
         Log.d("Searchable Activity:", "ENTRO!!!");
@@ -109,6 +91,7 @@ public class SearchableActivity extends ListActivity implements LocationListener
         sb.append("&radius=3000");
         sb.append("&types=restaurant");
         sb.append("&sensor=true");
+        //sb.append("&key="+R.string.googlePlaces_key);
         sb.append("&key="+API_KEY);
         // Creating a new non-ui thread task to download json data
         PlacesTask placesTask = new PlacesTask();
@@ -219,16 +202,17 @@ public class SearchableActivity extends ListActivity implements LocationListener
                     ratingMain.setRating(Float.parseFloat(list.get(i).get("rating")));
                     list.remove(i);
                 }
-
-
             }
             //nameMain.setText(list.get(0).get("name"));
             //vecinityMain.setText(list.get(0).get("vicinity"));
             //Log.d("RESULTADOS",list.toString());
             SimpleAdapter adapter = new SimpleAdapter(
-               SearchableActivity.this, list, R.layout.list_item, new String[]{NAME, VECINITY, RATING}, new int[]{R.id.name,R.id.vecinity,R.id.rating});
+               SearchableActivity.this, list, R.layout.list_item, new String[]{NAME, VECINITY, RATING, REFERENCE}, new int[]{R.id.name,R.id.vecinity,R.id.rating, R.id.reference});
                 adapter.setViewBinder(new MyBinder());
                 setListAdapter(adapter);
+
+            listClicker(list);
+
 
            /* for(int i=0;i<list.size();i++){
 
@@ -265,6 +249,40 @@ public class SearchableActivity extends ListActivity implements LocationListener
             }*/
         }
     }
+
+    public void listClicker(final List<HashMap<String,String>> list){
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                // getting values from selected ListItem
+                String name = ((TextView) view.findViewById(R.id.name))
+                        .getText().toString();
+                String vecinity = ((TextView) view.findViewById(R.id.vecinity))
+                        .getText().toString();
+                String  reference = ((TextView) view.findViewById(R.id.reference))
+                        .getText().toString();
+                /*String reference ="";
+                for(int i=0; i<list.size();i++){
+                    if(list.get(i).get(NAME).equals(name)){
+                        reference = list.get(i).get(REFERENCE);
+                    }
+                }*/
+                //Crear lista de lugares genera?
+                // Starting single contact activity
+                Intent in = new Intent(getApplicationContext(),
+                        SearchDetails.class);
+                in.putExtra(NAME, name);
+                in.putExtra(REFERENCE, reference);
+                in.putExtra(VECINITY,vecinity);
+                startActivity(in);
+            }
+        });
+
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

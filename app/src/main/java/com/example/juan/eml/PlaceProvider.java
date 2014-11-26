@@ -26,7 +26,9 @@ import java.util.List;
 /**
  * Created by juan on 11/10/14.
  */
-public class PlaceProvider extends ContentProvider {
+
+
+/*public class PlaceProvider extends ContentProvider {
     public static final String AUTHORITY = "com.example.juan.eml.PlaceProvider";
     public static final Uri SEARCH_URI = Uri.parse("content://"+AUTHORITY+"/search");
     public static final Uri DETAILS_URI = Uri.parse("content://"+AUTHORITY+"/details");
@@ -248,3 +250,4 @@ public class PlaceProvider extends ContentProvider {
         return 0;
     }
 }
+*/
