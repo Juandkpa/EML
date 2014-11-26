@@ -1,6 +1,5 @@
 package com.example.juan.eml;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.location.Location;
