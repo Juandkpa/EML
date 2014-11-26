@@ -8,6 +8,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.Rating;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
@@ -39,8 +41,13 @@ public class SearchableActivity extends ListActivity implements LocationListener
     double mLatitude=0;
     double mLongitude=0;
 
+    private static final String API_KEY = "AIzaSyBw6xFrZ1IznT6m1wkY9S74zXfR737D8_U";
+
+    private static String namePlace ="";
     private static final String NAME = "name";
     private static final String VECINITY = "vicinity";
+    private static final String RATING = "rating";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +56,7 @@ public class SearchableActivity extends ListActivity implements LocationListener
 
         ListView lv = getListView();
 
-/*        lv.setOnItemClickListener(new OnItemClickListener() {
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
@@ -57,19 +64,19 @@ public class SearchableActivity extends ListActivity implements LocationListener
                 // getting values from selected ListItem
                 String name = ((TextView) view.findViewById(R.id.name))
                         .getText().toString();
-                String cost = ((TextView) view.findViewById(R.id.vecinity))
+                String vecinity = ((TextView) view.findViewById(R.id.vecinity))
                         .getText().toString();
-
+//                String reference =
+               //Crear lista de lugares genera?
                 // Starting single contact activity
                 Intent in = new Intent(getApplicationContext(),
-                        SingleContactActivity.class);
-                in.putExtra(TAG_NAME, name);
-                in.putExtra(TAG_EMAIL, cost);
-                in.putExtra(TAG_PHONE_MOBILE, description);
+                        SearchDetails.class);
+                in.putExtra(NAME, name);
+               // in.putExtra("TAG_REFERENCE", reference);
+                in.putExtra(VECINITY,vecinity);
                 startActivity(in);
-
             }
-        });*/
+        });
 
 
         Log.d("Searchable Activity:", "ENTRO!!!");
@@ -85,27 +92,30 @@ public class SearchableActivity extends ListActivity implements LocationListener
 
         Intent intent = getIntent();
         if(intent.ACTION_SEARCH.equals(intent.getAction())){
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            doMySearch(query);
+            namePlace = intent.getStringExtra(SearchManager.QUERY);
+            doMySearch(namePlace);
         }
     }
 
+    public void photoSearch(String photoref){
+        //StringBuilder sb = new StringBuilder(());
+
+
+    }
     public void doMySearch(String query){
         String type = query;
         StringBuilder sb = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
         sb.append("location="+mLatitude+","+mLongitude);
-        sb.append("&radius=5000");
-        sb.append("&name="+type);
+        sb.append("&radius=3000");
+        sb.append("&types=restaurant");
         sb.append("&sensor=true");
-        sb.append("&key=AIzaSyAmrkRBZw5dEIrryIC31yldmaHs1OwIcMM");
-
+        sb.append("&key="+API_KEY);
         // Creating a new non-ui thread task to download json data
         PlacesTask placesTask = new PlacesTask();
         Log.d("ENTRO A DOMY SEARCH ","ENTRO LUEGO DE PLACESTASK!!!!!");
         // Invokes the "doInBackground()" method of the class PlaceTask
         placesTask.execute(sb.toString());
     }
-
 
     private class PlacesTask extends AsyncTask<String, Integer,String>{
         String data = null;
@@ -197,11 +207,28 @@ public class SearchableActivity extends ListActivity implements LocationListener
 
             // Clears all the existing markers
            // mGoogleMap.clear();
-            Log.d("RESULTADOS",list.toString());
-            ListAdapter adapter = new SimpleAdapter(
-               SearchableActivity.this, list, R.layout.list_item, new String[]{NAME, VECINITY}, new int[]{R.id.name,R.id.vecinity});
+            TextView nameMain = (TextView) findViewById(R.id.nombreMain);
+            TextView vecinityMain = (TextView) findViewById(R.id.vecinityMain);
+            RatingBar ratingMain =  (RatingBar) findViewById(R.id.MainratingBar);
 
-               setListAdapter(adapter);
+            Log.v("CANTIDAD LUGARES:",String.valueOf(list.size()));
+            for(int i=0; i<list.size();i++){
+                if(list.get(i).get("name").equals(namePlace)){
+                    nameMain.setText(list.get(i).get("name"));
+                    vecinityMain.setText(list.get(i).get("vicinity"));
+                    ratingMain.setRating(Float.parseFloat(list.get(i).get("rating")));
+                    list.remove(i);
+                }
+
+
+            }
+            //nameMain.setText(list.get(0).get("name"));
+            //vecinityMain.setText(list.get(0).get("vicinity"));
+            //Log.d("RESULTADOS",list.toString());
+            SimpleAdapter adapter = new SimpleAdapter(
+               SearchableActivity.this, list, R.layout.list_item, new String[]{NAME, VECINITY, RATING}, new int[]{R.id.name,R.id.vecinity,R.id.rating});
+                adapter.setViewBinder(new MyBinder());
+                setListAdapter(adapter);
 
            /* for(int i=0;i<list.size();i++){
 

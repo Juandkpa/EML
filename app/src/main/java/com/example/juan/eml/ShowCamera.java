@@ -2,8 +2,11 @@ package com.example.juan.eml;
 
 import android.content.Context;
 import android.hardware.Camera;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
+import java.io.IOException;
 
 /**
  * Created by juan on 11/10/14.
@@ -12,6 +15,8 @@ import android.view.SurfaceView;
 
 public class ShowCamera extends SurfaceView implements SurfaceHolder.Callback{
 
+
+
     public static int STATE_PREVIEW;
     private SurfaceHolder mHolder;
     private Camera camera = null;
@@ -19,6 +24,7 @@ public class ShowCamera extends SurfaceView implements SurfaceHolder.Callback{
     public ShowCamera(Context context) {
         super(context);
         //theCamera = camera;
+
         mHolder = getHolder();
         mHolder.addCallback(this);
     }
@@ -30,12 +36,11 @@ public class ShowCamera extends SurfaceView implements SurfaceHolder.Callback{
             camera = camera.open();
         }
         try {
-
             camera.setPreviewDisplay(holder);
-//            theCamera.startPreview();
 
-
-        }catch(Exception e){}
+        }catch(IOException e){
+            e.printStackTrace();
+        }
 
     }
 
@@ -46,9 +51,6 @@ public class ShowCamera extends SurfaceView implements SurfaceHolder.Callback{
         params.setPreviewSize(width,height);
         camera.setParameters(params);
         camera.startPreview();
-
-
-
     }
 
     @Override

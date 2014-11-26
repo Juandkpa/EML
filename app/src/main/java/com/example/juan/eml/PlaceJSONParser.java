@@ -51,6 +51,8 @@ public class PlaceJSONParser {
 
         String placeName = "-NA-";
         String vicinity="-NA-";
+        String rating ="0";
+        String reference ="-NA-";
         String latitude="";
         String longitude="";
 
@@ -64,12 +66,21 @@ public class PlaceJSONParser {
             if(!jPlace.isNull("vicinity"))
                 vicinity = jPlace.getString("vicinity");
 
+            if(!jPlace.isNull("rating"))
+                rating = jPlace.getString("rating");
+
+            //Extraer la reference para busqueda de detalles especificos
+            if(!jPlace.isNull("reference"))
+                reference = jPlace.getString("reference");
+
             latitude = jPlace.getJSONObject("geometry").getJSONObject("location").getString("lat");
             longitude = jPlace.getJSONObject("geometry").getJSONObject("location").getString("lng");
 
 
             place.put("name",placeName);
             place.put("vicinity",vicinity);
+            place.put("rating",rating);
+            place.put("reference",reference);
             place.put("lat",latitude);
             place.put("lng",longitude);
 

@@ -50,7 +50,7 @@ public class MyActivity extends Activity  {
     private ImageView imageResult;
     private FrameLayout frameNew;
     private Button snapPhoto;
-    private boolean takePicture = false;
+    private boolean mCameraReadyFlag = true;
     private Context mContext = this;
     private SearchView searchView;
     //private Bitmap image = null;
@@ -97,10 +97,10 @@ public class MyActivity extends Activity  {
 
     public void captureHandler(View view){
 
-        if(takePicture){
+        if(mCameraReadyFlag){
             cameraView.snapIt(jpegHandler);
         }else{
-            takePicture = true;
+            mCameraReadyFlag = true;
             frameNew.bringChildToFront(cameraView);
             imageResult.setImageBitmap(null);
             snapPhoto.setText("capture");
@@ -127,7 +127,7 @@ public class MyActivity extends Activity  {
             //
             frameNew.bringChildToFront(imageResult);
             snapPhoto.setText("Take it");
-            takePicture = false;
+            mCameraReadyFlag = false;
         }
     };
 
