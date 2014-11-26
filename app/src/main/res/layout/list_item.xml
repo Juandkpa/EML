@@ -60,7 +60,19 @@
             android:id="@+id/reference"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/isOpen"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/lat"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/lng"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
     
 
 

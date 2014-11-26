@@ -49,6 +49,9 @@ public class SearchableActivity extends ListActivity implements LocationListener
     private static final String VECINITY = "vicinity";
     private static final String RATING = "rating";
     private static final String REFERENCE = "reference";
+    private static final String ISOPEN = "isOpen";
+    private static final String LAT = "lat";
+    private static final String LNG = "lng";
     private ListView lv;
 
     @Override
@@ -57,9 +60,6 @@ public class SearchableActivity extends ListActivity implements LocationListener
         setContentView(R.layout.activity_searchable);
 
         lv = getListView();
-
-
-
 
         Log.d("Searchable Activity:", "ENTRO!!!");
         System.out.println("ENtro!!!! Searchable!!");
@@ -196,7 +196,7 @@ public class SearchableActivity extends ListActivity implements LocationListener
 
             Log.v("CANTIDAD LUGARES:",String.valueOf(list.size()));
             for(int i=0; i<list.size();i++){
-                if(list.get(i).get("name").equals(namePlace)){
+                if(list.get(i).get("name").contentEquals(namePlace)){
                     nameMain.setText(list.get(i).get("name"));
                     vecinityMain.setText(list.get(i).get("vicinity"));
                     ratingMain.setRating(Float.parseFloat(list.get(i).get("rating")));
@@ -207,9 +207,9 @@ public class SearchableActivity extends ListActivity implements LocationListener
             //vecinityMain.setText(list.get(0).get("vicinity"));
             //Log.d("RESULTADOS",list.toString());
             SimpleAdapter adapter = new SimpleAdapter(
-               SearchableActivity.this, list, R.layout.list_item, new String[]{NAME, VECINITY, RATING, REFERENCE}, new int[]{R.id.name,R.id.vecinity,R.id.rating, R.id.reference});
-                adapter.setViewBinder(new MyBinder());
-                setListAdapter(adapter);
+               SearchableActivity.this, list, R.layout.list_item, new String[]{NAME, VECINITY, RATING, REFERENCE, ISOPEN, LAT, LNG}, new int[]{R.id.name,R.id.vecinity,R.id.rating, R.id.reference, R.id.isOpen, R.id.lat, R.id.lng});
+               adapter.setViewBinder(new MyBinder());
+               setListAdapter(adapter);
 
             listClicker(list);
 
@@ -264,6 +264,16 @@ public class SearchableActivity extends ListActivity implements LocationListener
                         .getText().toString();
                 String  reference = ((TextView) view.findViewById(R.id.reference))
                         .getText().toString();
+                String isOpen = ((TextView) view.findViewById(R.id.isOpen))
+                        .getText().toString();
+
+                float rating = ((RatingBar) view.findViewById(R.id.rating)).getRating();
+
+                String lat = ((TextView) view.findViewById(R.id.lat))
+                        .getText().toString();
+
+                String lng = ((TextView) view.findViewById(R.id.lng))
+                        .getText().toString();
                 /*String reference ="";
                 for(int i=0; i<list.size();i++){
                     if(list.get(i).get(NAME).equals(name)){
@@ -272,11 +282,14 @@ public class SearchableActivity extends ListActivity implements LocationListener
                 }*/
                 //Crear lista de lugares genera?
                 // Starting single contact activity
-                Intent in = new Intent(getApplicationContext(),
-                        SearchDetails.class);
+                Intent in = new Intent(getApplicationContext(),SearchDetails.class);
                 in.putExtra(NAME, name);
                 in.putExtra(REFERENCE, reference);
-                in.putExtra(VECINITY,vecinity);
+                in.putExtra(VECINITY, vecinity);
+                in.putExtra(ISOPEN, isOpen);
+                in.putExtra(RATING, rating);
+                in.putExtra(LAT, lat);
+                in.putExtra(LNG, lng);
                 startActivity(in);
             }
         });

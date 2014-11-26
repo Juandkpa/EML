@@ -8,29 +8,37 @@
         android:layout_height="match_parent"
         android:layout_weight="0.30"
         android:orientation="vertical" >
-
         <FrameLayout
             android:id="@+id/camera_preview"
             android:layout_width="fill_parent"
-            android:layout_height="450dp" />
+            android:layout_height="340dp" />
       <RelativeLayout
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="5dp">
+          android:layout_marginTop="2dp">
           <SearchView
               android:id="@+id/searchWidget"
-          android:layout_width="270dp"
+              android:layout_width="280dp"
               android:layout_height="wrap_content"
               android:gravity="left" />
 
-          <Button
+          <ImageButton
+              android:id="@+id/button_capture"
+              android:layout_width="40dp"
+              android:layout_height="wrap_content"
+              android:layout_toRightOf="@id/searchWidget"
+              android:src="@drawable/ic_action_search"
+              android:onClick="captureHandler"
+              android:gravity="right"/>
+
+          <!--<Button
               android:id="@+id/button_capture"
               android:layout_width="110dp"
               android:layout_height="wrap_content"
               android:onClick="captureHandler"
               android:text="Take it"
-              android:layout_toRightOf="@id/searchWidget"
-              android:gravity="right"/>
+              archWidget"-->
+
       </RelativeLayout>
     </LinearLayout>
 </LinearLayout>

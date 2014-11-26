@@ -7,6 +7,7 @@ import android.location.LocationListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.RatingBar;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
@@ -33,6 +34,9 @@ public class SearchDetails extends ListActivity implements LocationListener {
     private static final String REFERENCE = "reference";
     private static final String AUTHOR_NAME = "author_name";
     private static final String TEXT = "text";
+    private static final String ISOPEN = "isOpen";
+    private static final String RATING = "rating";
+    private static final String LAT = "lat";
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -42,15 +46,23 @@ public class SearchDetails extends ListActivity implements LocationListener {
         Intent in = getIntent();
 
         String name = in.getStringExtra(NAME);
-        String horario = in.getStringExtra(VECINITY);
+        String isOpen = in.getStringExtra(ISOPEN);
         String reference = in.getStringExtra(REFERENCE);
+        float rating = in.getFloatExtra(RATING,0);
+        String lat = in.getStringExtra(LAT);
 
         TextView lblName = (TextView) findViewById(R.id.place_Name);
-        TextView lblHorario = (TextView) findViewById(R.id.horario);
+        TextView lblisOpen = (TextView) findViewById(R.id.horario);
+        RatingBar barRating = (RatingBar) findViewById(R.id.ratingBarDet);
 
+        lblName.setText(lat);
+        barRating.setRating(rating);
 
-        lblName.setText(name);
-        lblHorario.setText(reference);
+        if(isOpen.contentEquals("true"))
+            lblisOpen.setText("Abierto");
+        else
+            lblisOpen.setText("Cerrado");
+
         doMySearch(reference);
     }
 
