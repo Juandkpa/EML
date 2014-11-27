@@ -48,8 +48,8 @@ public class ShowCamera extends SurfaceView implements SurfaceHolder.Callback{
     public void surfaceChanged(SurfaceHolder holder, int format, int width,
                                int height) {
         Camera.Parameters params = camera.getParameters();
-        params.setPreviewSize(width,height);
-//        camera.setParameters(params);
+        //params.setPreviewSize(width,height);
+        camera.setParameters(params);
         camera.startPreview();
     }
 

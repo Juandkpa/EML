@@ -7,6 +7,8 @@ import android.location.LocationListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.RatingBar;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -37,33 +39,49 @@ public class SearchDetails extends ListActivity implements LocationListener {
     private static final String ISOPEN = "isOpen";
     private static final String RATING = "rating";
     private static final String LAT = "lat";
+    private static final String LNG = "lng";
+    private ImageButton btmShowMap;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail);
 
+
+        btmShowMap = (ImageButton) findViewById(R.id.toMap);
         Intent in = getIntent();
 
-        String name = in.getStringExtra(NAME);
+
+        final String name = in.getStringExtra(NAME);
         String isOpen = in.getStringExtra(ISOPEN);
         String reference = in.getStringExtra(REFERENCE);
         float rating = in.getFloatExtra(RATING,0);
-        String lat = in.getStringExtra(LAT);
+        final String lat = in.getStringExtra(LAT);
+        final String lng = in.getStringExtra(LNG);
 
         TextView lblName = (TextView) findViewById(R.id.place_Name);
         TextView lblisOpen = (TextView) findViewById(R.id.horario);
         RatingBar barRating = (RatingBar) findViewById(R.id.ratingBarDet);
 
-        lblName.setText(lat);
+        lblName.setText(name);
         barRating.setRating(rating);
 
         if(isOpen.contentEquals("true"))
             lblisOpen.setText("Abierto");
         else
             lblisOpen.setText("Cerrado");
-
         doMySearch(reference);
+
+        btmShowMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent in = new Intent(getApplicationContext(),MapsActivity.class);
+                in.putExtra(LAT,lat);
+                in.putExtra(LNG, lng);
+                in.putExtra(NAME, name);
+                startActivity(in);
+            }
+        });
     }
 
     public void doMySearch(String reference){
@@ -229,6 +247,8 @@ public class SearchDetails extends ListActivity implements LocationListener {
             }*/
         }
     }
+
+
 
 
 

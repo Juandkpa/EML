@@ -34,7 +34,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginLeft="13dp"
                 android:textColor="#43bd00"
-                android:textSize="20sp"
+                android:textSize="24sp"
                 android:textStyle="bold"/>
             <TextView
                 android:id="@+id/vecinityMain"
