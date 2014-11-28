@@ -90,7 +90,6 @@ public class MyActivity extends Activity  {
 
         frameNew = (FrameLayout) findViewById(R.id.camera_preview);
         snapPhoto = (ImageButton) findViewById(R.id.button_capture);
-
         frameNew.addView(imageResult);
         frameNew.addView(cameraView);
         frameNew.bringChildToFront(imageResult);
@@ -153,8 +152,8 @@ public class MyActivity extends Activity  {
             options.inSampleSize = 1;  	//no downsampling
             Bitmap myImage = BitmapFactory.decodeByteArray(imageData, 0,imageData.length,options);
             imageResult.setImageBitmap(myImage);
-            fileOutputStream = new FileOutputStream(sdCard.toString() +INPUT_IMG_FILENAME);
 
+            fileOutputStream = new FileOutputStream(sdCard.toString() +INPUT_IMG_FILENAME);
             BufferedOutputStream bos = new BufferedOutputStream(fileOutputStream);
 
             //compress image to jpeg

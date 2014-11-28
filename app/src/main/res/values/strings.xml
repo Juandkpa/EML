@@ -11,5 +11,6 @@
     <string name="title_activity_searchable">SearchableActivity</string>
     <string name="title_activity_details">DetailsActivity</string>
     <string name="googlePlaces_key">AIzaSyBw6xFrZ1IznT6m1wkY9S74zXfR737D8_U</string>
+    <string name="tap">Tap the image to open the camera!!</string>
 
 </resources>
