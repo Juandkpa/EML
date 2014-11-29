@@ -54,8 +54,10 @@ public class PlaceJSONParser {
         String rating ="0";
         String isOpen = "0";
         String reference ="-NA-";
-        String latitude="";
-        String longitude="";
+        String latitude= "";
+        String longitude= "";
+        String referencePhoto = "0";
+        String maxwidth = "0";
 
         try{
 
@@ -79,6 +81,12 @@ public class PlaceJSONParser {
             if(!jPlace.isNull("reference"))
                 reference = jPlace.getString("reference");
 
+            if(!jPlace.isNull("photos")) {
+                JSONObject photo = (JSONObject) jPlace.getJSONArray("photos").get(0);
+                referencePhoto = photo.getString("photo_reference");
+                maxwidth = photo.getString("width");
+            }
+
             latitude = jPlace.getJSONObject("geometry").getJSONObject("location").getString("lat");
             longitude = jPlace.getJSONObject("geometry").getJSONObject("location").getString("lng");
 
@@ -90,6 +98,8 @@ public class PlaceJSONParser {
             place.put("reference",reference);
             place.put("lat",latitude);
             place.put("lng",longitude);
+            place.put("photo_reference",referencePhoto);
+            place.put("maxWidth", maxwidth);
 
         }catch(JSONException e){
             e.printStackTrace();

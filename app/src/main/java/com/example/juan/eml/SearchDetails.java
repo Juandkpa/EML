@@ -137,7 +137,6 @@ public class SearchDetails extends ListActivity implements LocationListener {
             iStream = urlConnection.getInputStream();
 
             BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
-
             StringBuffer sb  = new StringBuffer();
 
             String line = "";

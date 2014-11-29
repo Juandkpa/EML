@@ -1,14 +1,14 @@
 package com.example.juan.eml;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.app.SearchManager;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.media.Rating;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,7 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.SimpleAdapter;
@@ -52,13 +52,15 @@ public class SearchableActivity extends ListActivity implements LocationListener
     private static final String ISOPEN = "isOpen";
     private static final String LAT = "lat";
     private static final String LNG = "lng";
+    private Bitmap img;
     private ListView lv;
+    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_searchable);
-
+        imageView = (ImageView) findViewById(R.id.imagePlace);
         lv = getListView();
 
         Log.d("Searchable Activity:", "ENTRO!!!");
@@ -194,59 +196,31 @@ public class SearchableActivity extends ListActivity implements LocationListener
             TextView vecinityMain = (TextView) findViewById(R.id.vecinityMain);
             RatingBar ratingMain =  (RatingBar) findViewById(R.id.MainratingBar);
 
+            int i;
+
             Log.v("CANTIDAD LUGARES:",String.valueOf(list.size()));
-            for(int i=0; i<list.size();i++){
-                if(list.get(i).get("name").contentEquals(namePlace)){
+            for(i=0; i<list.size();i++){
+                if(list.get(i).get("name").contains(namePlace)){
                     nameMain.setText(list.get(i).get("name"));
                     vecinityMain.setText(list.get(i).get("vicinity"));
                     ratingMain.setRating(Float.parseFloat(list.get(i).get("rating")));
-                    list.remove(i);
+
+                 //   list.remove(i);
+                    break;
                 }
+
             }
-            //nameMain.setText(list.get(0).get("name"));
-            //vecinityMain.setText(list.get(0).get("vicinity"));
-            //Log.d("RESULTADOS",list.toString());
+
+                Log.v("Esto es i",String.valueOf(i));
+                if(!(i==20))
+                    searchPhoto(list.get(i).get("maxWidth"), list.get(i).get("photo_reference"));
+
+
             SimpleAdapter adapter = new SimpleAdapter(
                SearchableActivity.this, list, R.layout.list_item, new String[]{NAME, VECINITY, RATING, REFERENCE, ISOPEN, LAT, LNG}, new int[]{R.id.name,R.id.vecinity,R.id.rating, R.id.reference, R.id.isOpen, R.id.lat, R.id.lng});
                adapter.setViewBinder(new MyBinder());
                setListAdapter(adapter);
-
-            listClicker(list);
-
-
-           /* for(int i=0;i<list.size();i++){
-
-                // Creating a marker
-             //   MarkerOptions markerOptions = new MarkerOptions();
-
-                // Getting a place from the places list
-                HashMap<String, String> hmPlace = list.get(i);
-
-                // Getting latitude of the place
-                double lat = Double.parseDouble(hmPlace.get("lat"));
-
-                // Getting longitude of the place
-                double lng = Double.parseDouble(hmPlace.get("lng"));
-
-                // Getting name
-                String name = hmPlace.get("place_name");
-
-                // Getting vicinity
-                String vicinity = hmPlace.get("vicinity");
-
-                LatLng latLng = new LatLng(lat, lng);
-                Log.d("NAME PLACE:",name);
-
-                // Setting the position for the marker
-               // markerOptions.position(latLng);
-
-                // Setting the title for the marker.
-                //This will be displayed on taping the marker
-               // markerOptions.title(name + " : " + vicinity);
-
-                // Placing a marker on the touched position
-             //   mGoogleMap.addMarker(markerOptions);
-            }*/
+               listClicker(list);
         }
     }
 
@@ -274,14 +248,6 @@ public class SearchableActivity extends ListActivity implements LocationListener
 
                 String lng = ((TextView) view.findViewById(R.id.lng))
                         .getText().toString();
-                /*String reference ="";
-                for(int i=0; i<list.size();i++){
-                    if(list.get(i).get(NAME).equals(name)){
-                        reference = list.get(i).get(REFERENCE);
-                    }
-                }*/
-                //Crear lista de lugares genera?
-                // Starting single contact activity
                 Intent in = new Intent(getApplicationContext(),SearchDetails.class);
                 in.putExtra(NAME, name);
                 in.putExtra(REFERENCE, reference);
@@ -294,6 +260,66 @@ public class SearchableActivity extends ListActivity implements LocationListener
             }
         });
 
+    }
+
+    public void searchPhoto(String... url){
+
+        StringBuilder sb = new StringBuilder("https://maps.googleapis.com/maps/api/place/photo?");
+        sb.append("maxwidth="+url[0]);
+        sb.append("&photoreference="+url[1]);
+        sb.append("&sensor=true");
+        sb.append("&key="+API_KEY);
+        // Creating a new non-ui thread task to download json data
+        PhotoTask photoTask = new PhotoTask();
+        Log.d("ENTRO A SEARCH PHOTO ", "ENTRO LUEGO DE LA BUSQUEDA!!!");
+        // Invokes the "doInBackground()" method of the class PlaceTask
+        photoTask.execute(sb.toString());
+    }
+
+    private class PhotoTask extends AsyncTask<String, Integer,String> {
+        @Override
+        protected String doInBackground(String... url) {
+            try{
+                downloadPhoto(url[0]);
+                Log.d("DOWUNLOADURL PHOTO",url[0]);
+            }catch(Exception e){
+                Log.d("Backgraound TaskpHOTO",e.toString());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result){
+        }
+    }
+
+    private void downloadPhoto(String strUrl) throws IOException {
+
+        InputStream iStream = null;
+        HttpURLConnection urlConnection = null;
+
+        try{
+            URL url = new URL(strUrl);
+            Log.d("MADE URL:", "HACIENDO URL PHOTO");
+            // Creating an http connection to communicate with url
+            urlConnection = (HttpURLConnection) url.openConnection();
+
+            // Connecting to url
+            urlConnection.connect();
+
+            // Reading data from url
+            iStream = urlConnection.getInputStream();
+            img = BitmapFactory.decodeStream(iStream);
+            imageView.setImageBitmap(img);
+            Log.v("IMAGE", img.toString());
+            iStream.close();
+
+        }catch(Exception e){
+            Log.d("Exception while downloading url", e.toString());
+        }finally{
+            iStream.close();
+            urlConnection.disconnect();
+        }
     }
 
     @Override
