@@ -2,13 +2,17 @@ package com.example.juan.eml;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -40,6 +44,15 @@ public class SearchDetails extends ListActivity implements LocationListener {
     private static final String RATING = "rating";
     private static final String LAT = "lat";
     private static final String LNG = "lng";
+    private static final String PHOTO ="photo_reference";
+    private static final String MAXWIDTH ="maxWidth";
+    private Bitmap img;
+    private String param1="";
+    private String param2="";
+    private ImageView photoDetail;
+
+
+
     private ImageButton btmShowMap;
 
     @Override
@@ -47,7 +60,7 @@ public class SearchDetails extends ListActivity implements LocationListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail);
 
-
+        photoDetail =(ImageView) findViewById(R.id.photoRest);
         btmShowMap = (ImageButton) findViewById(R.id.toMap);
         Intent in = getIntent();
 
@@ -59,9 +72,16 @@ public class SearchDetails extends ListActivity implements LocationListener {
         final String lat = in.getStringExtra(LAT);
         final String lng = in.getStringExtra(LNG);
 
+        param1= in.getStringExtra(MAXWIDTH);
+        param2= in.getStringExtra(PHOTO);
+
+        Log.v("MAXWID",param1);
+        Log.v("PHOTO",param2);
+
         TextView lblName = (TextView) findViewById(R.id.place_Name);
         TextView lblisOpen = (TextView) findViewById(R.id.horario);
         RatingBar barRating = (RatingBar) findViewById(R.id.ratingBarDet);
+
 
         lblName.setText(name);
         barRating.setRating(rating);
@@ -83,7 +103,6 @@ public class SearchDetails extends ListActivity implements LocationListener {
             }
         });
     }
-
     public void doMySearch(String reference){
 
         StringBuilder sb = new StringBuilder("https://maps.googleapis.com/maps/api/place/details/json?");
@@ -157,99 +176,106 @@ public class SearchDetails extends ListActivity implements LocationListener {
     }
 
     /** A class to parse the Google Places in JSON format */
-    private class ParserTask extends AsyncTask<String, Integer, List<HashMap<String,String>>>{
+    private class ParserTask extends AsyncTask<String, Integer, List<HashMap<String,String>>> {
 
         JSONObject jObject;
 
         // Invoked by execute() method of this object
         @Override
-        protected List<HashMap<String,String>> doInBackground(String... jsonData) {
+        protected List<HashMap<String, String>> doInBackground(String... jsonData) {
 
             //List<HashMap<String, String>> places = null;
             List<HashMap<String, String>> reviews = null;
             PlaceDetailsJSONParser detailsJsonParser = new PlaceDetailsJSONParser();
 
-            try{
+            try {
                 jObject = new JSONObject(jsonData[0]);
 
                 /** Getting the parsed data as a List construct */
                 reviews = detailsJsonParser.parseReviews(jObject);
-               // Log.d("JSONoBJECT",places.toString());
-            }catch(Exception e){
-                Log.d("Exception",e.toString());
+                // Log.d("JSONoBJECT",places.toString());
+            } catch (Exception e) {
+                Log.d("Exception", e.toString());
             }
             return reviews;
         }
 
         // Executed after the complete execution of doInBackground() method
         @Override
-        protected void onPostExecute(List<HashMap<String,String>> list){
+        protected void onPostExecute(List<HashMap<String, String>> list) {
+            Log.v("CANTIDAD REVIEWS:", String.valueOf(list.size()));
 
-            // Clears all the existing markers
-            // mGoogleMap.clear();
-          /*  TextView name_author = (TextView) findViewById(R.id.nombreMain);
-            TextView text = (TextView) findViewById(R.id.vecinityMain);
-            RatingBar ratingMain =  (RatingBar) findViewById(R.id.MainratingBar);*/
-
-            Log.v("CANTIDAD REVIEWS:",String.valueOf(list.size()));
-          /*  for(int i=0; i<list.size();i++){
-                if(list.get(i).get("name").equals(namePlace)){
-                    nameMain.setText(list.get(i).get("name"));
-                    vecinityMain.setText(list.get(i).get("vicinity"));
-                    ratingMain.setRating(Float.parseFloat(list.get(i).get("rating")));
-                    list.remove(i);
-                }
-            }*/
-            //nameMain.setText(list.get(0).get("name"));
-            //vecinityMain.setText(list.get(0).get("vicinity"));
-            //Log.d("RESULTADOS",list.toString());
 
             SimpleAdapter adapter = new SimpleAdapter(
-                    SearchDetails.this, list, R.layout.list_item_comments, new String[]{AUTHOR_NAME, TEXT}, new int[]{R.id.author_name,R.id.text});
+                    SearchDetails.this, list, R.layout.list_item_comments, new String[]{AUTHOR_NAME, TEXT}, new int[]{R.id.author_name, R.id.text});
 
             setListAdapter(adapter);
-            //listClicker(list);
-
-
-           /* for(int i=0;i<list.size();i++){
-
-                // Creating a marker
-             //   MarkerOptions markerOptions = new MarkerOptions();
-
-                // Getting a place from the places list
-                HashMap<String, String> hmPlace = list.get(i);
-
-                // Getting latitude of the place
-                double lat = Double.parseDouble(hmPlace.get("lat"));
-
-                // Getting longitude of the place
-                double lng = Double.parseDouble(hmPlace.get("lng"));
-
-                // Getting name
-                String name = hmPlace.get("place_name");
-
-                // Getting vicinity
-                String vicinity = hmPlace.get("vicinity");
-
-                LatLng latLng = new LatLng(lat, lng);
-                Log.d("NAME PLACE:",name);
-
-                // Setting the position for the marker
-               // markerOptions.position(latLng);
-
-                // Setting the title for the marker.
-                //This will be displayed on taping the marker
-               // markerOptions.title(name + " : " + vicinity);
-
-                // Placing a marker on the touched position
-             //   mGoogleMap.addMarker(markerOptions);
-            }*/
+            searchPhoto(param1, param2);
         }
     }
 
+        public void searchPhoto(String... url){
+
+            StringBuilder sb = new StringBuilder("https://maps.googleapis.com/maps/api/place/photo?");
+            sb.append("maxwidth="+url[0]);
+            sb.append("&photoreference="+url[1]);
+            sb.append("&sensor=true");
+            sb.append("&key="+API_KEY);
+            // Creating a new non-ui thread task to download json data
+            PhotoTask photoTask = new PhotoTask();
+            Log.d("ENTRO A SEARCH PHOTO ", "ENTRO LUEGO DE LA BUSQUEDA!!!");
+            // Invokes the "doInBackground()" method of the class PlaceTask
+            photoTask.execute(sb.toString());
+        }
 
 
 
+        private class PhotoTask extends AsyncTask<String, Integer,String> {
+            @Override
+            protected String doInBackground(String... url) {
+                try{
+                    downloadPhoto(url[0]);
+                    Log.d("DOWUNLOADURL PHOTO",url[0]);
+                }catch(Exception e){
+                    Log.d("Backgraound TaskpHOTO",e.toString());
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(String result){
+            }
+        }
+
+
+        private void downloadPhoto(String strUrl) throws IOException {
+
+            InputStream iStream = null;
+            HttpURLConnection urlConnection = null;
+
+            try{
+                URL url = new URL(strUrl);
+                Log.d("MADE URL:", "HACIENDO URL PHOTO");
+                // Creating an http connection to communicate with url
+                urlConnection = (HttpURLConnection) url.openConnection();
+
+                // Connecting to url
+                urlConnection.connect();
+
+                // Reading data from url
+                iStream = urlConnection.getInputStream();
+                img = BitmapFactory.decodeStream(iStream);
+                photoDetail.setImageBitmap(img);
+                Log.v("IMAGE", img.toString());
+                iStream.close();
+
+            }catch(Exception e){
+                Log.d("Exception while downloading url", e.toString());
+            }finally{
+                iStream.close();
+                urlConnection.disconnect();
+            }
+        }
 
 
     @Override

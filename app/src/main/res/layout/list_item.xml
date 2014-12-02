@@ -68,6 +68,17 @@
         android:layout_width="1dp"
         android:layout_height="1dp"
         android:visibility="invisible"/>
+    <TextView
+        android:id="@+id/maxWidth"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:visibility="invisible"/>
+    <TextView
+        android:id="@+id/photoReference"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:visibility="invisible"/>
+
     </LinearLayout>
 
 

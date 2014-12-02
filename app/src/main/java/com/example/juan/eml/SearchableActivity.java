@@ -25,7 +25,6 @@ import android.widget.TextView;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -52,6 +51,8 @@ public class SearchableActivity extends ListActivity implements LocationListener
     private static final String ISOPEN = "isOpen";
     private static final String LAT = "lat";
     private static final String LNG = "lng";
+    private static final String PHOTO ="photo_reference";
+    private static final String MAXWIDTH ="maxWidth";
     private Bitmap img;
     private ListView lv;
     private ImageView imageView;
@@ -210,14 +211,12 @@ public class SearchableActivity extends ListActivity implements LocationListener
                 }
 
             }
-
                 Log.v("Esto es i",String.valueOf(i));
                 if(!(i==20))
                     searchPhoto(list.get(i).get("maxWidth"), list.get(i).get("photo_reference"));
 
-
             SimpleAdapter adapter = new SimpleAdapter(
-               SearchableActivity.this, list, R.layout.list_item, new String[]{NAME, VECINITY, RATING, REFERENCE, ISOPEN, LAT, LNG}, new int[]{R.id.name,R.id.vecinity,R.id.rating, R.id.reference, R.id.isOpen, R.id.lat, R.id.lng});
+               SearchableActivity.this, list, R.layout.list_item, new String[]{NAME, VECINITY, RATING, REFERENCE, ISOPEN, LAT, LNG, MAXWIDTH, PHOTO}, new int[]{R.id.name,R.id.vecinity,R.id.rating, R.id.reference, R.id.isOpen, R.id.lat, R.id.lng, R.id.maxWidth, R.id.photoReference});
                adapter.setViewBinder(new MyBinder());
                setListAdapter(adapter);
                listClicker(list);
@@ -240,13 +239,17 @@ public class SearchableActivity extends ListActivity implements LocationListener
                         .getText().toString();
                 String isOpen = ((TextView) view.findViewById(R.id.isOpen))
                         .getText().toString();
-
                 float rating = ((RatingBar) view.findViewById(R.id.rating)).getRating();
 
                 String lat = ((TextView) view.findViewById(R.id.lat))
                         .getText().toString();
 
                 String lng = ((TextView) view.findViewById(R.id.lng))
+                        .getText().toString();
+
+                String photoref = ((TextView) view.findViewById(R.id.photoReference))
+                        .getText().toString();
+                String maxWidth = ((TextView) view.findViewById(R.id.maxWidth))
                         .getText().toString();
                 Intent in = new Intent(getApplicationContext(),SearchDetails.class);
                 in.putExtra(NAME, name);
@@ -256,6 +259,8 @@ public class SearchableActivity extends ListActivity implements LocationListener
                 in.putExtra(RATING, rating);
                 in.putExtra(LAT, lat);
                 in.putExtra(LNG, lng);
+                in.putExtra(PHOTO,photoref);
+                in.putExtra(MAXWIDTH,maxWidth);
                 startActivity(in);
             }
         });
